@@ -53,7 +53,7 @@ app.get("/api/data", async (req, res) => {
 
     const sun = sunRes.data.astronomy.astro;
 
-    console.table("Free Astro Data Request", {
+    console.log("Free Astro Data Request", {
         year: time.year,
         month: time.month,
         date: time.day,
