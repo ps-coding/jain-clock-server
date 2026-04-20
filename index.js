@@ -110,11 +110,11 @@ app.get("/api/data", async (req, res) => {
       },
     });
   } catch (err) {
-    console.error(err.message);
-
     res.status(500).json({
       error: "Failed to fetch aggregated data",
-      details: err.message,
+      source: err.config?.url,
+      status: err.response?.status,
+      details: err.response?.data || err.message,
     });
   }
 });
