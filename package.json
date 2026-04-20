@@ -1,0 +1,32 @@
+{
+  "name": "jain-clock-server",
+  "version": "1.0.0",
+  "description": "Jain clock server",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ps-coding/jain-clock-server.git"
+  },
+  "keywords": [
+    "jain",
+    "clock",
+    "server"
+  ],
+  "author": "Prasham Shah",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/ps-coding/jain-clock-server/issues"
+  },
+  "homepage": "https://github.com/ps-coding/jain-clock-server#readme",
+  "dependencies": {
+    "axios": "^1.15.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0"
+  }
+}
