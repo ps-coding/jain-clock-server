@@ -54,9 +54,14 @@ app.get("/api/data", async (req, res) => {
     const sun = sunRes.data.astronomy.astro;
 
     // 4. TITHI DATA
-    const tithiRes = await axios.post(
-      "https://json.freeastrologyapi.com/tithi-durations",
-      {
+    const tithiRes = await axios({
+      method: "POST",
+      url: "https://json.freeastrologyapi.com/tithi-durations",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.ASTRO_API_KEY,
+      },
+      data: {
         year: time.year,
         month: time.month,
         date: time.day,
@@ -71,12 +76,7 @@ app.get("/api/data", async (req, res) => {
           ayanamsha: "lahiri",
         },
       },
-      {
-        headers: {
-          "x-api-key": ASTRO_API_KEY,
-        },
-      }
-    );
+    });
 
     const tithi = tithiRes.data;
 
