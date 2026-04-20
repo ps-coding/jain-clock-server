@@ -1,30 +1,122 @@
-require("dotenv").config();
-
-const process = require("process");
 const express = require("express");
-const cors = require("cors");
+const axios = require("axios");
 
 const app = express();
-const port = process.env["PORT"] || 3000;
+app.use(express.json());
 
-const FREE_ASTROLOGY_HOST = "json.freeastrologyapi.com";
-const FREE_ASTROLOGY_PORT = 443;
-const FREE_ASTROLOGY_HTTP_PORT = 80;
-const FREE_ASTROLOGY_PATH = "/tithi-durations";
-const FREE_ASTROLOGY_API_KEY = process.env["FREE_ASTROLOGY_API_KEY"];
+// ENV VARS (set in Vercel dashboard)
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
+const ASTRO_API_KEY = process.env.ASTRO_API_KEY;
 
-app.use(cors());
-app.use(express.json({}));
+// Helper: get client IP
+function getClientIp(req) {
+  return (
+    req.headers["x-forwarded-for"]?.split(",")[0] ||
+    req.socket.remoteAddress
+  );
+}
 
-app.post("/isjain", async (req, res) => {
+app.get("/api/data", async (req, res) => {
   try {
-    
-    res.json({ response });
+    const ip = getClientIp(req);
+
+    // 1. GEO DATA
+    const geoRes = await axios.get(
+      `http://ip-api.com/json/${ip}?fields=status,message,zip,city,country,lat,lon,offset`
+    );
+
+    const geo = geoRes.data;
+    if (geo.status !== "success") {
+      throw new Error("Geo lookup failed");
+    }
+
+    // 2. TIME DATA
+    const timeRes = await axios.get(
+      `https://timeapi.io/api/v1/time/current/ip?ipAddress=${ip}`
+    );
+
+    const time = timeRes.data;
+
+    const dateIso = time.date; // YYYY-MM-DD
+
+    // 3. SUN DATA
+    const sunRes = await axios.get(
+      `https://api.weatherapi.com/v1/astronomy.json`,
+      {
+        params: {
+          key: WEATHER_API_KEY,
+          q: ip,
+          dt: dateIso,
+        },
+      }
+    );
+
+    const sun = sunRes.data.astronomy.astro;
+
+    // 4. TITHI DATA
+    const tithiRes = await axios.post(
+      "https://json.freeastrologyapi.com/tithi-durations",
+      {
+        year: time.year,
+        month: time.month,
+        date: time.day,
+        hours: time.hour,
+        minutes: time.minute,
+        seconds: time.seconds,
+        latitude: geo.lat,
+        longitude: geo.lon,
+        timezone: geo.offset / 3600,
+        config: {
+          observation_point: "topocentric",
+          ayanamsha: "lahiri",
+        },
+      },
+      {
+        headers: {
+          "x-api-key": ASTRO_API_KEY,
+        },
+      }
+    );
+
+    const tithi = tithiRes.data;
+
+    // FINAL RESPONSE
+    res.json({
+      ip,
+      geo: {
+        city: geo.city,
+        country: geo.country,
+        zip: geo.zip,
+        lat: geo.lat,
+        lon: geo.lon,
+        timezoneOffset: geo.offset / 3600,
+      },
+      time: {
+        date: time.date,
+        time: time.time,
+        iso: `${time.date} ${time.time}`,
+      },
+      sun: {
+        sunrise: sun.sunrise,
+        sunset: sun.sunset,
+      },
+      tithi: {
+        number: tithi.number,
+        name: tithi.name,
+        paksha: tithi.paksha,
+        completesAt: tithi.completes_at,
+        leftPercentage:
+          tithi.left_precentage ?? tithi.left_percentage,
+      },
+    });
   } catch (err) {
-    console.error(err);
+    console.error(err.message);
+
+    res.status(500).json({
+      error: "Failed to fetch aggregated data",
+      details: err.message,
+    });
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server started on port ${port}.`);
-});
+module.exports = app;

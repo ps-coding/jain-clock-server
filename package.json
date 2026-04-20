@@ -26,7 +26,6 @@
   "homepage": "https://github.com/ps-coding/jain-clock-server#readme",
   "dependencies": {
     "axios": "^1.15.1",
-    "dotenv": "^16.4.5",
     "express": "^4.21.0"
   }
 }
