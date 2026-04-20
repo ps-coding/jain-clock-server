@@ -44,7 +44,7 @@ app.get("/api/data", async (req, res) => {
 
     const hour = parseInt(time.time.split(":")[0]);
     const minute = parseInt(time.time.split(":")[1]);
-    const seconds = parseFloat(time.time.split(":")[2]);
+    const seconds = Math.ceil(parseFloat(time.time.split(":")[2]));
 
     // 3. SUN DATA
     const sunRes = await axios.get(
