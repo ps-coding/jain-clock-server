@@ -53,7 +53,7 @@ app.get("/api/data", async (req, res) => {
 
     const sun = sunRes.data.astronomy.astro;
 
-    console.log("Free Astro Data Request", {
+    res.status(500).json({
         year: time.year,
         month: time.month,
         date: time.day,
@@ -67,7 +67,8 @@ app.get("/api/data", async (req, res) => {
           observation_point: "topocentric",
           ayanamsha: "lahiri",
         },
-      })
+      });
+      return;
 
     // 4. TITHI DATA
     const tithiRes = await axios({
