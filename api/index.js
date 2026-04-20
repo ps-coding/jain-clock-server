@@ -36,8 +36,15 @@ app.get("/api/data", async (req, res) => {
     );
 
     const time = timeRes.data;
-
     const dateIso = time.date; // YYYY-MM-DD
+
+    const year = time.date.split("-")[0];
+    const month = time.date.split("-")[1];
+    const day = time.date.split("-")[2];
+
+    const hour = parseInt(time.time.split(":")[0]);
+    const minute = parseInt(time.time.split(":")[1]);
+    const seconds = parseFloat(time.time.split(":")[2]);
 
     // 3. SUN DATA
     const sunRes = await axios.get(
@@ -53,9 +60,6 @@ app.get("/api/data", async (req, res) => {
 
     const sun = sunRes.data.astronomy.astro;
 
-    res.status(500).json(time);
-      return;
-
     // 4. TITHI DATA
     const tithiRes = await axios({
       method: "POST",
@@ -65,12 +69,12 @@ app.get("/api/data", async (req, res) => {
         "x-api-key": process.env.ASTRO_API_KEY,
       },
       data: {
-        year: time.year,
-        month: time.month,
-        date: time.day,
-        hours: time.hour,
-        minutes: time.minute,
-        seconds: time.seconds,
+        year: year,
+        month: month,
+        date: day,
+        hours: hour,
+        minutes: minute,
+        seconds: seconds,
         latitude: geo.lat,
         longitude: geo.lon,
         timezone: geo.offset / 3600,
@@ -97,7 +101,12 @@ app.get("/api/data", async (req, res) => {
       time: {
         date: time.date,
         time: time.time,
-        iso: `${time.date} ${time.time}`,
+        month,
+        day,
+        year,
+        hour,
+        minute,
+        seconds,
       },
       sun: {
         sunrise: sun.sunrise,
