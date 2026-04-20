@@ -53,21 +53,7 @@ app.get("/api/data", async (req, res) => {
 
     const sun = sunRes.data.astronomy.astro;
 
-    res.status(500).json({
-        year: time.year,
-        month: time.month,
-        date: time.day,
-        hours: time.hour,
-        minutes: time.minute,
-        seconds: time.seconds,
-        latitude: geo.lat,
-        longitude: geo.lon,
-        timezone: geo.offset / 3600,
-        config: {
-          observation_point: "topocentric",
-          ayanamsha: "lahiri",
-        },
-      });
+    res.status(500).json(time);
       return;
 
     // 4. TITHI DATA
