@@ -61,7 +61,7 @@ app.get("/api/data", async (req, res) => {
         "Content-Type": "application/json",
         "x-api-key": process.env.ASTRO_API_KEY,
       },
-      body: JSON.stringify({
+      data: {
         year: time.year,
         month: time.month,
         date: time.day,
@@ -75,7 +75,7 @@ app.get("/api/data", async (req, res) => {
           observation_point: "topocentric",
           ayanamsha: "lahiri",
         },
-      }),
+      },
     });
 
     const tithi = tithiRes.data;
