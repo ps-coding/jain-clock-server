@@ -102,10 +102,7 @@ app.get("/api/data", async (req, res) => {
         minute,
         seconds,
       },
-      sun: {
-        sunrise: sun.sunrise,
-        sunset: sun.sunset,
-      },
+      sun,
       tithi,
     });
   } catch (err) {
