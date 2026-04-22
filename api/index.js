@@ -61,6 +61,24 @@ app.get("/api/data", async (req, res) => {
     const sun = sunRes.data.astronomy.astro;
 
     // 4. TITHI DATA
+    res.status(500).json({
+        year: year,
+        month: month,
+        date: day,
+        hours: hour,
+        minutes: minute,
+        seconds: seconds,
+        latitude: geo.lat,
+        longitude: geo.lon,
+        timezone: geo.offset / 3600,
+        config: {
+          observation_point: "topocentric",
+          ayanamsha: "lahiri",
+        },
+      });
+
+    return;
+
     const tithiRes = await axios({
       method: "POST",
       url: "https://json.freeastrologyapi.com/tithi-durations",
