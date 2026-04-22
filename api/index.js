@@ -112,14 +112,7 @@ app.get("/api/data", async (req, res) => {
         sunrise: sun.sunrise,
         sunset: sun.sunset,
       },
-      tithi: {
-        number: tithi.number,
-        name: tithi.name,
-        paksha: tithi.paksha,
-        completesAt: tithi.completes_at,
-        leftPercentage:
-          tithi.left_precentage ?? tithi.left_percentage,
-      },
+      tithi,
     });
   } catch (err) {
     res.status(500).json({
