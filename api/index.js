@@ -91,16 +91,10 @@ app.get("/api/data", async (req, res) => {
     res.json({
       ip,
       geo: {
-        city: geo.city,
-        country: geo.country,
-        zip: geo.zip,
-        lat: geo.lat,
-        lon: geo.lon,
-        timezoneOffset: geo.offset / 3600,
+        ...geo,
+        offset: geo.offset / 3600,
       },
       time: {
-        date: time.date,
-        time: time.time,
         month,
         day,
         year,
