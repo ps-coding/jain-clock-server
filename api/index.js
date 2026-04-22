@@ -38,9 +38,9 @@ app.get("/api/data", async (req, res) => {
     const time = timeRes.data;
     const dateIso = time.date; // YYYY-MM-DD
 
-    const year = time.date.split("-")[0];
-    const month = time.date.split("-")[1];
-    const day = time.date.split("-")[2];
+    const year = parseInt(time.date.split("-")[0]);
+    const month = parseInt(time.date.split("-")[1]);
+    const day = parseInt(time.date.split("-")[2]);
 
     const hour = parseInt(time.time.split(":")[0]);
     const minute = parseInt(time.time.split(":")[1]);
@@ -61,24 +61,6 @@ app.get("/api/data", async (req, res) => {
     const sun = sunRes.data.astronomy.astro;
 
     // 4. TITHI DATA
-    res.status(500).json({
-        year: year,
-        month: month,
-        date: day,
-        hours: hour,
-        minutes: minute,
-        seconds: seconds,
-        latitude: geo.lat,
-        longitude: geo.lon,
-        timezone: geo.offset / 3600,
-        config: {
-          observation_point: "topocentric",
-          ayanamsha: "lahiri",
-        },
-      });
-
-    return;
-
     const tithiRes = await axios({
       method: "POST",
       url: "https://json.freeastrologyapi.com/tithi-durations",
