@@ -85,7 +85,9 @@ app.get("/api/data", async (req, res) => {
       },
     });
 
-    const tithi = JSON.parse(JSON.parse(tithiRes.data.output));
+    const tithi = JSON.parse(tithiRes.data.output);
+
+    console.error(tithi);
 
     // FINAL RESPONSE
     res.json({
