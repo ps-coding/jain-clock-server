@@ -79,7 +79,7 @@ app.get("/api/data", async (req, res) => {
         longitude: geo.lon,
         timezone: geo.offset / 3600,
         config: {
-          observation_point: "geocentric",
+          observation_point: "topocentric",
           ayanamsha: "lahiri",
         },
       },
